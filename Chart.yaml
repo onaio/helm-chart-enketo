@@ -1,0 +1,7 @@
+apiVersion: v2
+name: enketo
+description: A Helm chart for enketo-express
+home: https://github.com/enketo/enketo-express
+type: application
+version: 0.1.0
+appVersion: "2.6.2"
