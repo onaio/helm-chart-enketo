@@ -267,7 +267,7 @@ buildConfig: |-
 
 initFile: |-
   #!/bin/bash
-  grunt
+  npm install && grunt && npm prune --production
   exec pm2 start --no-daemon app.js -n enketo
 
 settingsConfig: |-
