@@ -4,4 +4,4 @@ description: A Helm chart for enketo-express
 home: https://github.com/enketo/enketo-express
 type: application
 version: 0.1.1
-appVersion: "2.6.2"
+appVersion: "4.1.2"
