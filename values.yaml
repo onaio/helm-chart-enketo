@@ -89,7 +89,7 @@ livenessProbe:
   httpGet:
     path: /
     port: http
-  initialDelaySeconds: 120
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2
@@ -97,7 +97,7 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-  initialDelaySeconds: 120
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2
@@ -270,8 +270,8 @@ buildConfig: |-
 
 initFile: |-
   #!/bin/bash
-  npm install && grunt && npm prune --production
-  exec pm2 start --no-daemon app.js -n enketo
+  npm prune --production
+  exec pm2 start --log /dev/stdout --no-daemon app.js -n enketo
 
 settingsConfig: |-
   {
