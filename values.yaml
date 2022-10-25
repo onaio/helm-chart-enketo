@@ -9,6 +9,8 @@ image:
   pullPolicy: IfNotPresent
   tag: 2.6.2
 
+recreatePods: false
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
