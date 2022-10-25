@@ -13,10 +13,17 @@ spec:
       {{- include "enketo.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/initFile: {{ .Values.initFile | sha256sum }}
+        checksum/expressConfig: {{ .Values.expressConfig | sha256sum }}
+        checksum/settingsConfig: {{ .Values.settingsConfig | sha256sum }}
+        checksum/buildConfig: {{ .Values.buildConfig | sha256sum }}
+        {{- if .Values.recreatePods }}
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "enketo.selectorLabels" . | nindent 8 }}{{- with .Values.extraSelectorLabels}}
         {{- toYaml . | nindent 8 }}
