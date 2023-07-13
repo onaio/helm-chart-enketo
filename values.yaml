@@ -273,7 +273,7 @@ buildConfig: |-
 initFile: |-
   #!/bin/bash
   npm prune --production
-  exec pm2 start --log /dev/stdout --no-daemon app.js -n enketo
+  exec pm2-runtime start --output /dev/stdout app.js -n enketo
 
 settingsConfig: |-
   {
