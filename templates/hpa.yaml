@@ -1,5 +1,6 @@
+{{ $kubeVersion := substr 0 5 .Capabilities.KubeVersion.Version }}
 {{- if .Values.autoscaling.enabled }}
-{{- if semverCompare ">=1.23" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.23" $kubeVersion -}}
 apiVersion: autoscaling/v2
 {{- else -}}
 apiVersion: autoscaling/v2beta1
@@ -21,7 +22,7 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        {{- if semverCompare ">=1.23" .Capabilities.KubeVersion.GitVersion }}
+        {{- if semverCompare ">=1.23" $kubeVersion }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
@@ -33,7 +34,7 @@ spec:
     - type: Resource
       resource:
         name: memory
-        {{- if semverCompare ">=1.23" .Capabilities.KubeVersion.GitVersion }}
+        {{- if semverCompare ">=1.23" $kubeVersion }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
