@@ -1,5 +1,6 @@
 {{- if .Values.autoscaling.enabled }}
-{{- if and (ge 1 (.Capabilities.KubeVersion.Major|int))  (ge 23 (.Capabilities.KubeVersion.Minor|int)) -}}
+{{- $kubeVersion:= substr 0 5 .Capabilities.KubeVersion.Version -}}
+{{- if semverCompare ">=1.23" $kubeVersion -}}
 apiVersion: autoscaling/v2
 {{- else -}}
 apiVersion: autoscaling/v2beta1
@@ -21,7 +22,7 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        {{- if and (ge 1 (.Capabilities.KubeVersion.Major|int))  (ge 23 (.Capabilities.KubeVersion.Minor|int)) }}
+        {{- if semverCompare ">=1.23" $kubeVersion }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
@@ -33,7 +34,7 @@ spec:
     - type: Resource
       resource:
         name: memory
-        {{- if and (ge 1 (.Capabilities.KubeVersion.Major|int))  (ge 23 (.Capabilities.KubeVersion.Minor|int)) }}
+        {{- if semverCompare ">=1.23" $kubeVersion }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
