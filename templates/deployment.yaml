@@ -14,10 +14,11 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/initFile: {{ .Values.initFile | sha256sum }}
-        checksum/expressConfig: {{ .Values.expressConfig | sha256sum }}
-        checksum/settingsConfig: {{ .Values.settingsConfig | sha256sum }}
-        checksum/buildConfig: {{ .Values.buildConfig | sha256sum }}
+        checksum/express.js: {{ .Values.expressConfig | default (.Files.Get "config/express.js") | sha256sum | quote }}
+        checksum/startup.sh: {{ .Values.initFile | default (.Files.Get "config/startup.sh") | sha256sum | quote }}
+        checksum/default-config.json: {{ .Values.settingsConfig | default (.Files.Get "config/default-config.json") | sha256sum | quote }}
+        checksum/config.json: {{ .Values.settingsConfig | default (.Files.Get "config/config.json") | sha256sum | quote }}
+        checksum/build.js: {{ .Values.buildConfig | default (.Files.Get "config/build.js") | sha256sum | quote }}
         {{- if .Values.recreatePods }}
         rollme: {{ randAlphaNum 5 | quote }}
         {{- end }}
@@ -38,9 +39,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: app-configs
-          secret:
-            secretName: {{ .Values.configSecretName }}
-            defaultMode: 0777
+          configMap:
+            name: {{ include "enketo.fullname" . }}-config-files
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -50,7 +50,7 @@ spec:
           volumeMounts:
             - name: app-configs
               mountPath: /srv/src/enketo_express/config
-          command: [ "/bin/bash", "-c" ]
+          command: ["/bin/bash", "-c"]
           args:
             - "/srv/src/enketo_express/config/startup.sh"
           ports:
@@ -63,6 +63,15 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+            {{- if .Values.extraEnvVars }}
+          env:
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.extraSecretEnvVars .Values.createExtraSecretEnvVarsSecret -}}
+          envFrom:
+            secrets:
+              - name: {{ .Values.extraSecretEnvVarsSecretName }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

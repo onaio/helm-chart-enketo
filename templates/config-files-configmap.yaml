@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "enketo.fullname" . }}-config-files
+  labels:
+      {{- include "enketo.labels" . | nindent 4 }}
+data:
+  express.js: {{ .Values.expressConfig | default (.Files.Get "config/express.js") | quote }}
+  startup.sh: {{ .Values.initFile | default (.Files.Get "config/startup.sh") | quote }}
+  default-config.json: {{ .Values.settingsConfig | default (.Files.Get "config/default-config.json") | quote }}
+  config.json: {{ include "local-config" . | quote }}
+  build.js: {{ .Values.buildConfig | default (.Files.Get "config/build.js") | quote }}

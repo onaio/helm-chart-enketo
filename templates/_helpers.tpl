@@ -60,3 +60,12 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Convert camelCase to space-separated string.
+*/}}
+{{- define "enketo.camelToSpace" -}}
+{{- $camelCase := . -}}
+{{- $withSpaces := regexReplaceAll "([a-z0-9])([A-Z])" $camelCase "${1} ${2}" -}}
+{{- $withSpaces | lower -}}
+{{- end -}}
