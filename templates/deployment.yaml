@@ -49,10 +49,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: app-configs
-              mountPath: /srv/src/enketo_express/config
+              mountPath: /srv/src/enketo/packages/enketo-express/config
           command: [ "/bin/bash", "-c" ]
           args:
-            - "/srv/src/enketo_express/config/startup.sh"
+            - "/srv/src/enketo/packages/enketo-express/config/startup.sh"
           ports:
             - name: http
               containerPort: {{ .Values.containerPort }}
