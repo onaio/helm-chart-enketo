@@ -1,29 +1,26 @@
-const alias = require('esbuild-plugin-alias');
 const path = require('path');
-const pkg = require('/srv/src/enketo_express/package.json');
+const pkg = require('../package.json');
 
 const cwd = process.cwd();
 
 const entryPoints = pkg.entries.map((entry) => path.resolve(cwd, entry));
 
-const isProduction = process.env.NODE_ENV === 'production';
-
-module.exports = {
+module.exports = /** @satisfies {import('esbuild').BuildOptions} */ ({
+    alias: Object.fromEntries(
+        Object.entries(pkg.browser).map(([key, value]) => [
+            key,
+            path.resolve(cwd, `${value}.js`),
+        ])
+    ),
     bundle: true,
+    chunkNames: 'chunks/[name]-[hash]',
     entryPoints,
-    format: 'iife',
-    minify: isProduction,
-    outdir: path.resolve(cwd, './public/js/build'),
-    plugins: [
-        alias(
-            Object.fromEntries(
-                Object.entries(pkg.browser).map(([key, value]) => [
-                    key,
-                    path.resolve(cwd, `${value}.js`),
-                ])
-            )
-        ),
-    ],
-    sourcemap: isProduction ? false : 'inline',
+    entryNames: '[name]',
+    external: ['crypto', 'libxslt'],
+    format: 'esm',
+    minify: true,
+    outdir: path.resolve(cwd, '../../public/js/build'),
+    sourcemap: true,
+    splitting: true,
     target: ['chrome89', 'edge89', 'firefox90', 'safari13'],
-};
+});
