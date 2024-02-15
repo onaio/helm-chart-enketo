@@ -24,6 +24,14 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+hostAliases: []
+#   - ip: "<ip>"
+#     hostnames:
+#       - "<hostname>"
+#   - ip: "<ip>"
+#     hostnames:
+#       - "<hostname1>"
+#       - "<hostname2>"
 podAnnotations: {}
 
 podSecurityContext:
