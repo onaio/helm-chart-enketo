@@ -126,12 +126,12 @@ expressConfig: |-
   const i18nextMiddleware = require('i18next-http-middleware');
   const compression = require('compression');
   const errorHandler = require('/srv/src/enketo/packages/enketo-express/app/controllers/error-handler');
-  
+
   const controllersPath = path.join("", '/srv/src/enketo/packages/enketo-express/app/controllers');
   const app = express();
   const debug = require('debug')('enketo:express');
   const config = require('/srv/src/enketo/packages/enketo-express/app/models/config-model');
-  
+
   // general
   for (const item in config.server) {
       if (Object.prototype.hasOwnProperty.call(config.server, item)) {
@@ -141,14 +141,14 @@ expressConfig: |-
   app.set('port', process.env.PORT || app.get('port') || 3000);
   app.set('env', process.env.NODE_ENV || 'production');
   app.set('authentication cookie name', '__enketo_');
-  
+
   // views
   app.set('views', path.resolve("", '/srv/src/enketo/packages/enketo-express/app/views'));
   app.set('view engine', 'pug');
-  
+
   // pretty json API responses
   app.set('json spaces', 4);
-  
+
   // setup i18next
   i18next
       .use(i18nextMiddleware.LanguageDetector)
@@ -176,11 +176,11 @@ expressConfig: |-
               suffix: '__',
           },
       });
-  
+
   app.i18next = i18next;
-  
+
   // middleware
-  
+
   app.use(requestContextMiddleware);
   app.use(compression());
   app.use(
@@ -217,7 +217,7 @@ expressConfig: |-
       `${`${app.get('base path')}/x`}/locales/build`,
       express.static(path.resolve(__dirname, '../../locales/build'))
   );
-  
+
   // set variables that should be accessible in all view templates
   app.use((req, res, next) => {
       res.locals.livereload = req.app.get('env') === 'development';
@@ -241,7 +241,7 @@ expressConfig: |-
       res.locals.clientConfig = config.client;
       next();
   });
-  
+
   // set security headers
   const securityHeaders = {};
   if (app.get('frameguard deny') === true) {
@@ -280,7 +280,7 @@ expressConfig: |-
           next();
       });
   }
-  
+
   // load controllers (including their routers)
   fs.readdirSync(controllersPath).forEach((file) => {
       if (file.indexOf('-controller.js') >= 0) {
@@ -288,10 +288,10 @@ expressConfig: |-
           require(`${controllersPath}/${file}`)(app);
       }
   });
-  
+
   // logging
   app.use(logger(app.get('env') === 'development' ? 'dev' : 'tiny'));
-  
+
   // error handlers
   app.use(errorHandler['404']);
   if (app.get('env') === 'development') {
@@ -299,17 +299,17 @@ expressConfig: |-
   } else {
       app.use(errorHandler.production);
   }
-  
+
   module.exports = app;
 
 buildConfig: |-
   const path = require('path');
   const pkg = require('../package.json');
-  
+
   const cwd = process.cwd();
-  
+
   const entryPoints = pkg.entries.map((entry) => path.resolve(cwd, entry));
-  
+
   module.exports = /** @satisfies {import('esbuild').BuildOptions} */ ({
       alias: Object.fromEntries(
           Object.entries(pkg.browser).map(([key, value]) => [
@@ -332,7 +332,6 @@ buildConfig: |-
 
 initFile: |-
   #!/bin/bash
-  yarn workspace enketo-express grunt
   yarn workspace enketo-express start
 
 settingsConfig: |-
