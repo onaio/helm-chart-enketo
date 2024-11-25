@@ -30,6 +30,10 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -50,7 +54,7 @@ spec:
           volumeMounts:
             - name: app-configs
               mountPath: /srv/src/enketo/packages/enketo-express/config
-          command: ["/bin/bash", "-c"]
+          command: [ "/bin/bash", "-c" ]
           args:
             - "/srv/src/enketo/packages/enketo-express/config/startup.sh"
           ports:
