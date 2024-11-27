@@ -1,0 +1,17 @@
+---
+{{- if .Values.customTranslationsEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configSecretName }}
+  labels:
+    {{- include "enketo.labels" . | nindent 4 }}
+data:
+  en: |-
+    {{ .Files.Get "translations/en.json" | nindent 4 }}
+  es: |-
+    {{ .Files.Get "translations/es.json" | nindent 4 }}
+  fr: |-
+    {{ .Files.Get "translations/fr.json" | nindent 4 }}
+{{- end }}
+

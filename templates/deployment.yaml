@@ -41,6 +41,16 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
+        - name: translations-volume
+          configMap:
+            name: translations-configmap
+            items:
+              - key: en.json
+                path: packages/enketo-express/locales/src/en/translation.json
+              - key: es.json
+                path: packages/enketo-express/locales/src/es/translation.json
+              - key: fr.json
+                path: packages/enketo-express/locales/src/fr/translation.json
         - name: app-configs
           secret:
             secretName: {{ .Values.configSecretName }}
@@ -52,6 +62,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+            - name: en-translation
+              mountPath: packages/enketo-express/locales/src/en/
+            - name: es-translation
+              mountPath: packages/enketo-express/locales/src/es/
+            - name: fr-translation
+              mountPath: packages/enketo-express/locales/src/fr/
             - name: app-configs
               mountPath: /srv/src/enketo/packages/enketo-express/config
           command: [ "/bin/bash", "-c" ]
