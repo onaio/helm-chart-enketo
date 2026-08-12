@@ -14,7 +14,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.initFile }}
         checksum/initFile: {{ .Values.initFile | sha256sum }}
+        {{- end }}
         checksum/expressConfig: {{ .Values.expressConfig | sha256sum }}
         checksum/settingsConfig: {{ .Values.settingsConfig | sha256sum }}
         checksum/buildConfig: {{ .Values.buildConfig | sha256sum }}
