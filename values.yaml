@@ -114,6 +114,8 @@ configSecretName: "enketo-config-secrets"
 
 containerPort: 8005
 
+containerEnvVars: {}
+
 extraSelectorLabels: {}
 
 expressConfig: |-
