@@ -14,7 +14,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.initFile }}
         checksum/initFile: {{ .Values.initFile | sha256sum }}
+        {{- end }}
         checksum/expressConfig: {{ .Values.expressConfig | sha256sum }}
         checksum/settingsConfig: {{ .Values.settingsConfig | sha256sum }}
         checksum/buildConfig: {{ .Values.buildConfig | sha256sum }}
@@ -52,12 +54,19 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.containerEnvVars }}
+          env:
+            {{- range $key, $value := .Values.containerEnvVars }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
             - name: app-configs
               mountPath: /srv/src/enketo/packages/enketo-express/config
-          command: [ "/bin/bash", "-c" ]
-          args:
-            - "/srv/src/enketo/packages/enketo-express/config/startup.sh"
+          # command: [ "/bin/bash", "-c" ]
+          # args:
+          #   - "/srv/src/enketo/packages/enketo-express/config/startup.sh"
           ports:
             - name: http
               containerPort: {{ .Values.containerPort }}
