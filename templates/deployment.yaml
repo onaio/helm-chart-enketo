@@ -18,6 +18,10 @@ spec:
         checksum/expressConfig: {{ .Values.expressConfig | sha256sum }}
         checksum/settingsConfig: {{ .Values.settingsConfig | sha256sum }}
         checksum/buildConfig: {{ .Values.buildConfig | sha256sum }}
+        {{- if .Values.accountLib }}
+        checksum/accountLib: {{ .Values.accountLib | sha256sum }}
+        checksum/accountBranding: {{ .Values.accountBranding | toJson | sha256sum }}
+        {{- end }}
         {{- if .Values.recreatePods }}
         rollme: {{ randAlphaNum 5 | quote }}
         {{- end }}
