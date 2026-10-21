@@ -116,6 +116,10 @@ readinessProbe:
 # of the application
 configSecretName: "enketo-config-secrets"
 
+# Optional CommonJS account provider and its declarative branding data.
+accountLib: ""
+accountBranding: {}
+
 containerPort: 8005
 
 extraSelectorLabels: {}
